@@ -11,19 +11,19 @@
 let
   inherit (stdenvNoCC.hostPlatform) system;
   shaMap = {
-    i686-linux = "01c155l9nzjbmkiqsak4h992ssp44qy5rra9mnrkxrvqdsfqlq8p";
-    x86_64-linux = "0xl8wac401dhknmi5ah2d83y2mg0fdmwww7ccvpymak1a1cg1jxb";
-    aarch64-linux = "1kzjv3gm0f6dg9b7mry3s47hj48xzfv3j3rba8cyxh37qi51fysc";
-    x86_64-darwin = "07pgdsxc12jnx8myv08g3n12lk7sp9cvg3kzknv2906wx9ycb0jm";
-    aarch64-darwin = "1j7z1sbhq7d5rz3360pvqdnz1wj5gmh0dryykhafbkb0l166vln1";
+    i686-linux = "10s2ki98rc9ckij4pnvyqs8sbfidphbx8ri5irxskkiijdag8izs";
+    x86_64-linux = "02yi1fcfvhd9wlrkjr9hra816l5xr3dzb5v7hrqr5bf49mzp0zz6";
+    aarch64-linux = "1464acrdg0klpp3lrj98ya8r5w7vpm7b4rmqpr195ifgd8g7i7vi";
+    x86_64-darwin = "1k8492nxf4k14b3x227jfc74wdm6hirmz9la5c8zfwdc11qkvz57";
+    aarch64-darwin = "1i61arhrdz5pbqkvn8kn6avdfdh8w9bhxg57ky7mazyb8zr13ixx";
   };
 
   urlMap = {
-    i686-linux = "https://github.com/sbonaiva/govm/releases/download/v0.0.7/govm_0.0.7_linux_386.tar.gz";
-    x86_64-linux = "https://github.com/sbonaiva/govm/releases/download/v0.0.7/govm_0.0.7_linux_amd64.tar.gz";
-    aarch64-linux = "https://github.com/sbonaiva/govm/releases/download/v0.0.7/govm_0.0.7_linux_arm64.tar.gz";
-    x86_64-darwin = "https://github.com/sbonaiva/govm/releases/download/v0.0.7/govm_0.0.7_darwin_amd64.tar.gz";
-    aarch64-darwin = "https://github.com/sbonaiva/govm/releases/download/v0.0.7/govm_0.0.7_darwin_arm64.tar.gz";
+    i686-linux = "https://github.com/sbonaiva/govm/releases/download/v0.0.7/govm_linux_386.tar.gz";
+    x86_64-linux = "https://github.com/sbonaiva/govm/releases/download/v0.0.7/govm_linux_amd64.tar.gz";
+    aarch64-linux = "https://github.com/sbonaiva/govm/releases/download/v0.0.7/govm_linux_arm64.tar.gz";
+    x86_64-darwin = "https://github.com/sbonaiva/govm/releases/download/v0.0.7/govm_darwin_amd64.tar.gz";
+    aarch64-darwin = "https://github.com/sbonaiva/govm/releases/download/v0.0.7/govm_darwin_arm64.tar.gz";
   };
 in
 stdenvNoCC.mkDerivation {
