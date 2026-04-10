@@ -2,12 +2,11 @@
   lib,
   stdenv,
   fetchFromGitHub,
-  fetchpatch,
   gitMinimal,
   python3,
   m4,
   cairo,
-  libX11,
+  libx11,
   mesa,
   mesa_glu,
   ncurses,
@@ -15,33 +14,22 @@
   tcsh,
   tk,
   fixDarwinDylibNames,
+  nix-update-script,
 }:
 
 stdenv.mkDerivation (finalAttrs: {
   pname = "magic-vlsi";
-  version = "8.3.573";
+  version = "8.3.629";
 
   src = fetchFromGitHub {
     owner = "RTimothyEdwards";
     repo = "magic";
     tag = finalAttrs.version;
-    hash = "sha256-P5qfMsn3DGHjeF7zsZWeG9j38C6j5UEwUqGyjaEVO1E=";
+    hash = "sha256-K/w2El2jkXN8qIa0kWvN8rCKWzjd8DcM3O6hb5UVQnw=";
     leaveDotGit = true;
   };
 
-  patches = [
-    (fetchpatch {
-      name = "fix-buffer-overflow-runstats.patch";
-      url = "https://github.com/RTimothyEdwards/magic/commit/6a07bc172b4bdae8bc22f51905194cdd427912cc.patch";
-      hash = "sha256-QPVl+SfUWj51u/G+EjTCVQZdG7tTdOlEFN/hS7E1Ojg=";
-    })
-
-    (fetchpatch {
-      name = "neuer-fix-name.patch";
-      url = "https://github.com/RTimothyEdwards/magic/commit/a70ca249c3a4e7a256a4482bd887452267c8cd52.patch";
-      hash = "sha256-sNQDz4/hBtwJeDrOCe+LfJkuaB0zRzX7w1aDv8ZD7Pw=";
-    })
-  ];
+  hardeningDisable = [ "fortify" ];
 
   nativeBuildInputs = [
     python3
@@ -53,9 +41,8 @@ stdenv.mkDerivation (finalAttrs: {
 
   buildInputs = [
     cairo
-    libX11
+    libx11
     m4
-    mesa
     mesa_glu
     ncurses
     tcl
@@ -105,6 +92,8 @@ stdenv.mkDerivation (finalAttrs: {
   # gnu89 is needed for GCC 15 that is more strict about K&R style prototypes
   env.NIX_CFLAGS_COMPILE = "-std=gnu89 -Wno-implicit-function-declaration";
   env.NIX_LDFLAGS = lib.optionalString stdenv.hostPlatform.isDarwin "-headerpad_max_install_names";
+
+  passthru.updateScript = nix-update-script { };
 
   meta = {
     description = "VLSI layout tool written in Tcl";

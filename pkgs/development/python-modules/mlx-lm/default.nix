@@ -24,14 +24,14 @@
 
 buildPythonPackage (finalAttrs: {
   pname = "mlx-lm";
-  version = "0.30.4";
+  version = "0.31.2";
   pyproject = true;
 
   src = fetchFromGitHub {
     owner = "ml-explore";
     repo = "mlx-lm";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-ncDg7C84d1tAgk1300N7wY6kD1BocNNIqDUl0xBLhqY=";
+    hash = "sha256-Ujt0KMs4dzIlbg7cg72TudAvlwJ4uWEG5Lx7+5j8cOU=";
   };
 
   build-system = [
@@ -79,14 +79,16 @@ buildPythonPackage (finalAttrs: {
     "tests/test_models.py::TestModels::test_gated_delta_masked"
   ];
 
+  disabledTests = [
+    # ValueError: [rope] dims must be positive but got 0
+    # Reported upstream: https://github.com/ml-explore/mlx-lm/issues/1089
+    "test_all_models"
+  ];
+
   meta = {
     description = "Run LLMs with MLX";
     homepage = "https://github.com/ml-explore/mlx-lm";
     changelog = "https://github.com/ml-explore/mlx-lm/releases/tag/${finalAttrs.src.tag}";
     license = lib.licenses.mit;
-    badPlatforms = [
-      # Building for x86_64 on macOS is not supported by mlx (dependency)
-      "x86_64-darwin"
-    ];
   };
 })

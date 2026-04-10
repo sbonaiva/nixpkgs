@@ -34,7 +34,7 @@
   gvfs,
   libheif,
   glib-networking,
-  nodejs_20,
+  nodejs_24,
   npmHooks,
   cargo-tauri,
   writableTmpDirAsHomeHook,
@@ -42,13 +42,13 @@
 
 rustPlatform.buildRustPackage (finalAttrs: {
   pname = "rapidraw";
-  version = "1.4.5";
+  version = "1.5.2";
 
   src = fetchFromGitHub {
     owner = "CyberTimon";
     repo = "RapidRAW";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-WG9Dlo7yRt+QZGA5112+BX3HHhjV0XW5nrj7PUORUFE=";
+    hash = "sha256-GCmaPNgPn6xTdvRTkXlrSasULlxWFTwuBlbqmMD4O8s=";
     fetchSubmodules = true;
 
     # darwin/linux hash mismatch in rawler submodule
@@ -58,25 +58,25 @@ rustPlatform.buildRustPackage (finalAttrs: {
     '';
   };
 
-  cargoHash = "sha256-6oI88cvlCR6TBiAAUka+Q8bkoYyTXvpMDNMfwlPjtIU=";
+  cargoHash = "sha256-IIl4BSEMpyLiiZQGRlQaIPpXNQKGg6GrGQmnHDzDAdc=";
 
   npmDeps = fetchNpmDeps {
     inherit (finalAttrs) src;
-    hash = "sha256-w806JHqy2ZLFcfYVm09VKnLd7BpLI1houfMYbY3sHe0=";
+    hash = "sha256-PLwefGi6p6rJLvLonHXszA74wqySyoE3xxRPDlrfgUQ=";
   };
 
   nativeBuildInputs = [
     pkg-config
     makeWrapper
     wrapGAppsHook4
-    nodejs_20
+    nodejs_24
     npmHooks.npmConfigHook
     cargo-tauri.hook
     writableTmpDirAsHomeHook
   ];
 
   buildInputs = [
-    nodejs_20
+    nodejs_24
     glib-networking
     openssl
     gtk3
@@ -125,31 +125,46 @@ rustPlatform.buildRustPackage (finalAttrs: {
       --replace-fail 'if !is_valid' 'if false'
   '';
 
+  # Fix dyld error about onnxruntime not being loaded on darwin during cargo test
+  preCheck = lib.optionalString stdenv.hostPlatform.isDarwin ''
+    export DYLD_LIBRARY_PATH="${onnxruntime}/lib:$DYLD_LIBRARY_PATH"
+  '';
+
   dontWrapGApps = true;
 
-  # needs to be declared twice annoyingly
-  ORT_STRATEGY = "system";
+  env = {
+    ORT_STRATEGY = "system";
+  };
 
-  postInstall = lib.optionalString stdenv.hostPlatform.isLinux ''
-    # Patch the .desktop file to set the Categories field
-    sed -i '/^Categories=/c\Categories=Graphics;Photography' "$out/share/applications/RapidRAW.desktop"
+  postInstall =
+    lib.optionalString stdenv.hostPlatform.isLinux ''
+      # Patch the .desktop file to set the Categories field
+      sed -i '/^Categories=/c\Categories=Graphics;Photography' "$out/share/applications/RapidRAW.desktop"
 
-    # Ensure the resources directory exists before linking
-    mkdir -p $out/lib/RapidRAW/resources
+      # Ensure the resources directory exists before linking
+      mkdir -p $out/lib/RapidRAW/resources
 
-    # link the .so file
-    ln -sf ${onnxruntime}/lib/libonnxruntime.so $out/lib/RapidRAW/resources/libonnxruntime.so
+      # link the .so file
+      ln -sf ${onnxruntime}/lib/libonnxruntime.so $out/lib/RapidRAW/resources/libonnxruntime.so
+    ''
+    + lib.optionalString stdenv.hostPlatform.isDarwin ''
+      # The binary links against @rpath/libonnxruntime.*.dylib but has no LC_RPATH entries
+      install_name_tool -add_rpath "${onnxruntime}/lib" "$out/Applications/RapidRAW.app/Contents/MacOS/rapidraw"
+      # The app also dlopen()s libonnxruntime.dylib at a hardcoded path inside the bundle
+      mkdir -p "$out/Applications/RapidRAW.app/Contents/Resources/resources"
+      ln -sf ${onnxruntime}/lib/libonnxruntime.dylib "$out/Applications/RapidRAW.app/Contents/Resources/resources/libonnxruntime.dylib"
+    '';
 
-    # remove the .dylib file
-    rm -rf $out/lib/RapidRAW/resources/libonnxruntime.dylib
-  '';
-
-  postFixup = lib.optionalString stdenv.hostPlatform.isLinux ''
-    wrapGApp $out/bin/rapidraw \
-      --prefix LD_LIBRARY_PATH : ${lib.makeLibraryPath finalAttrs.buildInputs} \
-      --set ORT_STRATEGY "system" \
-      --set ORT_DYLIB_PATH "${onnxruntime}/lib/libonnxruntime.so"
-  '';
+  postFixup =
+    lib.optionalString stdenv.hostPlatform.isLinux ''
+      wrapGApp $out/bin/rapidraw \
+        --prefix LD_LIBRARY_PATH : ${lib.makeLibraryPath finalAttrs.buildInputs} \
+        --set ORT_STRATEGY "system"
+    ''
+    + lib.optionalString stdenv.hostPlatform.isDarwin ''
+      wrapGApp "$out/Applications/RapidRAW.app/Contents/MacOS/rapidraw" \
+        --set ORT_STRATEGY "system"
+    '';
 
   meta = {
     description = "Blazingly-fast, non-destructive, and GPU-accelerated RAW image editor built with performance in mind";

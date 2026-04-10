@@ -1,22 +1,22 @@
 {
-  "version": "1.15.8",
-  "vscodeVersion": "1.104.0",
+  "version": "1.22.2",
+  "vscodeVersion": "1.107.0",
   "sources": {
     "x86_64-linux": {
-      "url": "https://edgedl.me.gvt1.com/edgedl/release2/j0qc3/antigravity/stable/1.15.8-5724687216017408/linux-x64/Antigravity.tar.gz",
-      "sha256": "44afc76e06599b5eed8eab68db3d2c553c77ea6b9cc7652250e3d1a58bbb1498"
+      "url": "https://edgedl.me.gvt1.com/edgedl/release2/j0qc3/antigravity/stable/1.22.2-5206900187463680/linux-x64/Antigravity.tar.gz",
+      "sha256": "85c6b2decfefef2c6e0adaf161b602da7c1ecb2db6157ec0a4caffcfe4811209"
     },
     "aarch64-linux": {
-      "url": "https://edgedl.me.gvt1.com/edgedl/release2/j0qc3/antigravity/stable/1.15.8-5724687216017408/linux-arm/Antigravity.tar.gz",
-      "sha256": "a39cb7fb78eaceb939e82cf8024fc7e16694a61b32d2af61ba414fe4284e41cd"
+      "url": "https://edgedl.me.gvt1.com/edgedl/release2/j0qc3/antigravity/stable/1.22.2-5206900187463680/linux-arm/Antigravity.tar.gz",
+      "sha256": "601fe7d97bf49fe06ebde331f1385e9e7e58269d23667808ae58256a87929a23"
     },
     "x86_64-darwin": {
-      "url": "https://edgedl.me.gvt1.com/edgedl/release2/j0qc3/antigravity/stable/1.15.8-5724687216017408/darwin-x64/Antigravity.zip",
-      "sha256": "2554e90087f83e92655650a66d51f47c5577fade58627d5ec8b4221e5ed62ed8"
+      "url": "https://edgedl.me.gvt1.com/edgedl/release2/j0qc3/antigravity/stable/1.22.2-5206900187463680/darwin-x64/Antigravity.zip",
+      "sha256": "14686d6b15741b33abaf52b19a10f18e8427796461efa285a2fa2ddb30e0dcad"
     },
     "aarch64-darwin": {
-      "url": "https://edgedl.me.gvt1.com/edgedl/release2/j0qc3/antigravity/stable/1.15.8-5724687216017408/darwin-arm/Antigravity.zip",
-      "sha256": "cc3199592ff91325e395ba9fff1a0cd9f3c709bec52ec36d30f27101d6231239"
+      "url": "https://edgedl.me.gvt1.com/edgedl/release2/j0qc3/antigravity/stable/1.22.2-5206900187463680/darwin-arm/Antigravity.zip",
+      "sha256": "51e1f488da34f4e38c63806eed28a6b4bd5b583c275907945871710bed0f85d5"
     }
   }
 }

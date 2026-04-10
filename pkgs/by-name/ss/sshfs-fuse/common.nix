@@ -1,6 +1,6 @@
 {
   version,
-  sha256,
+  hash,
   platforms,
   patches ? [ ],
 }:
@@ -22,18 +22,15 @@
   openssh,
 }:
 
-let
-  fuse = if stdenv.hostPlatform.isDarwin then macfuse-stubs else fuse3;
-in
-stdenv.mkDerivation rec {
+stdenv.mkDerivation (finalAttrs: {
   pname = "sshfs-fuse";
   inherit version;
 
   src = fetchFromGitHub {
     owner = "libfuse";
     repo = "sshfs";
-    rev = "sshfs-${version}";
-    inherit sha256;
+    tag = "sshfs-${finalAttrs.version}";
+    inherit hash;
   };
 
   inherit patches;
@@ -46,7 +43,7 @@ stdenv.mkDerivation rec {
     makeWrapper
   ];
   buildInputs = [
-    fuse
+    fuse3
     glib
   ];
   nativeCheckInputs = [
@@ -75,7 +72,7 @@ stdenv.mkDerivation rec {
   checkPhase = lib.optionalString (!stdenv.hostPlatform.isDarwin) ''
     # The tests need fusermount:
     mkdir bin
-    cp ${fuse}/bin/fusermount3 bin/fusermount
+    cp ${fuse3}/bin/fusermount3 bin/fusermount
     export PATH=bin:$PATH
     # Can't access /dev/fuse within the sandbox: "FUSE kernel module does not seem to be loaded"
     substituteInPlace test/util.py --replace "/dev/fuse" "/dev/null"
@@ -93,4 +90,4 @@ stdenv.mkDerivation rec {
     mainProgram = "sshfs";
     maintainers = [ ];
   };
-}
+})

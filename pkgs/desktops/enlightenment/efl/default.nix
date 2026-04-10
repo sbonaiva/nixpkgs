@@ -76,7 +76,7 @@ stdenv.mkDerivation rec {
   version = "1.28.1";
 
   src = fetchurl {
-    url = "http://download.enlightenment.org/rel/libs/${pname}/${pname}-${version}.tar.xz";
+    url = "https://download.enlightenment.org/rel/libs/${pname}/${pname}-${version}.tar.xz";
     sha256 = "sha256-hM9hRfnMgr//aQAFviQ5LI88UvjgD/BNjuo3FCnAlCQ=";
   };
 
@@ -160,6 +160,9 @@ stdenv.mkDerivation rec {
   ];
 
   dontDropIconThemeCache = true;
+
+  # Fix build with gcc15 (-std=gnu23)
+  env.NIX_CFLAGS_COMPILE = lib.optionalString stdenv.cc.isGNU "-std=gnu17";
 
   mesonFlags = [
     "--buildtype=release"

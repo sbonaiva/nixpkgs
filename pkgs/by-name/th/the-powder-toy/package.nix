@@ -7,7 +7,7 @@
   jsoncpp,
   lib,
   libpng,
-  libX11,
+  libx11,
   lua5_2,
   luajit,
   meson,
@@ -18,15 +18,15 @@
   stdenv,
   zlib,
 }:
-stdenv.mkDerivation rec {
+stdenv.mkDerivation (finalAttrs: {
   pname = "the-powder-toy";
-  version = "99.3.384";
+  version = "99.5.394";
 
   src = fetchFromGitHub {
     owner = "The-Powder-Toy";
     repo = "The-Powder-Toy";
-    tag = "v${version}";
-    hash = "sha256-vlswHNkjyxM9sZT+mwiCMfNbdAbhYyx06w+ZLfaPaEQ=";
+    tag = "v${finalAttrs.version}";
+    hash = "sha256-ejkWIxlS6J9DHw/XNmEC94oc0xmqvj+hFu3TBPyCqwg=";
   };
 
   nativeBuildInputs = [
@@ -43,7 +43,7 @@ stdenv.mkDerivation rec {
     fftwFloat
     jsoncpp
     libpng
-    libX11
+    libx11
     lua5_2
     luajit
     SDL2
@@ -75,4 +75,4 @@ stdenv.mkDerivation rec {
     ];
     mainProgram = "powder";
   };
-}
+})

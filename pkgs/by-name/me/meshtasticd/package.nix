@@ -9,20 +9,13 @@
   writableTmpDirAsHomeHook,
   bluez,
   i2c-tools,
-  libX11,
+  libx11,
   libgpiod_1,
   libinput,
   libusb1,
   libuv,
   libxkbcommon,
   ulfius,
-  openssl,
-  gnutls,
-  jansson,
-  zlib,
-  libmicrohttpd,
-  orcania,
-  yder,
   yaml-cpp,
   udevCheckHook,
   versionCheckHook,
@@ -73,28 +66,22 @@ stdenv.mkDerivation (finalAttrs: {
 
   buildInputs = [
     bluez
-    gnutls
     i2c-tools
-    jansson
-    libX11
+    libx11
     libgpiod_1
     libinput
-    libmicrohttpd
     libusb1
     libuv
     libxkbcommon
-    openssl
-    orcania
     ulfius
     yaml-cpp
-    yder
-    zlib
   ];
 
   preConfigure = ''
     mkdir -p platformio-deps-native
     cp -ar ${platformio-deps-native}/. platformio-deps-native
     chmod +w -R platformio-deps-native
+    rm -f platformio-deps-native/core/appstate.json
 
     export PLATFORMIO_CORE_DIR=platformio-deps-native/core
     export PLATFORMIO_LIBDEPS_DIR=platformio-deps-native/libdeps

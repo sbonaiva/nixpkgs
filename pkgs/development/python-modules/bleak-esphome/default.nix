@@ -19,14 +19,14 @@
 
 buildPythonPackage (finalAttrs: {
   pname = "bleak-esphome";
-  version = "3.4.1";
+  version = "3.7.1";
   pyproject = true;
 
   src = fetchFromGitHub {
     owner = "bluetooth-devices";
     repo = "bleak-esphome";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-unVo56W/zS8qgU3AC9nxosfO5jlx8zgYoTZZehkcBiQ=";
+    hash = "sha256-drNMU0Ka5e3uQ9UHXP5O+I4l4jOxUdq2Bf0WcsGk9IM=";
   };
 
   postPatch = ''

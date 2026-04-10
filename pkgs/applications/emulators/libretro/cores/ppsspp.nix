@@ -13,13 +13,13 @@
 }:
 mkLibretroCore {
   core = "ppsspp";
-  version = "0-unstable-2026-01-24";
+  version = "0-unstable-2026-03-31";
 
   src = fetchFromGitHub {
     owner = "hrydgard";
     repo = "ppsspp";
-    rev = "bab01f1b162ed76dde584b9a1f9f327fecbf5cb5";
-    hash = "sha256-SXI6EmvpQ80nkzxswBrvCZTVi8qW6R5097D4aZTSie4=";
+    rev = "030c7a9e6b1a22bf8ee1db40f4d4b7402095bce1";
+    hash = "sha256-qy9S6/ThIA4YtO6J5R4RdPq4BvHDmwq7Y063gXXTuiQ=";
     fetchSubmodules = true;
   };
 

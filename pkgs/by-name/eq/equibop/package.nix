@@ -18,13 +18,13 @@
 }:
 stdenv.mkDerivation (finalAttrs: {
   pname = "equibop";
-  version = "3.1.7";
+  version = "3.1.8";
 
   src = fetchFromGitHub {
     owner = "Equicord";
     repo = "Equibop";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-AzXBANUcm/DYYkNlO7q++/Dx826o5Hg/1cYJ84rMY0U=";
+    hash = "sha256-OcD4xcD/A48oJcsKuhYBc/UigK+1NfTEuJivL+qdfeA=";
   };
 
   postPatch = ''
@@ -121,7 +121,8 @@ stdenv.mkDerivation (finalAttrs: {
       --add-flags $out/opt/Equibop/resources/app.asar \
       ${lib.optionalString withTTS "--add-flags \"--enable-speech-dispatcher\""} \
       ${lib.optionalString withMiddleClickScroll "--add-flags \"--enable-blink-features=MiddleClickAutoscroll\""} \
-      --add-flags "\''${NIXOS_OZONE_WL:+\''${WAYLAND_DISPLAY:+--ozone-platform-hint=auto --enable-features=WaylandWindowDecorations --enable-wayland-ime=true}}"
+      --add-flags "\''${NIXOS_OZONE_WL:+\''${WAYLAND_DISPLAY:+--ozone-platform-hint=auto --enable-features=WaylandWindowDecorations --enable-wayland-ime=true}}" \
+      --prefix LD_LIBRARY_PATH : "${lib.makeLibraryPath [ (lib.getLib stdenv.cc.cc) ]}"
   '';
 
   desktopItems = makeDesktopItem {

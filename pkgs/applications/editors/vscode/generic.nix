@@ -2,7 +2,11 @@
   stdenv,
   lib,
   coreutils,
+  gawk,
   gnugrep,
+  gnused,
+  glibc,
+  jq,
   copyDesktopItems,
   makeDesktopItem,
   unzip,
@@ -33,6 +37,7 @@
   openssl,
   webkitgtk_4_1,
   ripgrep,
+  which,
 
   # needed to fix "Save as Root"
   asar,
@@ -226,7 +231,6 @@ stdenv.mkDerivation (
         exec = executableName + " --open-url %U";
         icon = iconName;
         startupNotify = true;
-        startupWMClass = shortName;
         categories = [
           "Utility"
           "TextEditor"
@@ -270,9 +274,21 @@ stdenv.mkDerivation (
       autoPatchelfHook
       asar
       copyDesktopItems
+      jq
       # override doesn't preserve splicing https://github.com/NixOS/nixpkgs/issues/132651
       # Has to use `makeShellWrapper` from `buildPackages` even though `makeShellWrapper` from the inputs is spliced because `propagatedBuildInputs` would pick the wrong one because of a different offset.
       (buildPackages.wrapGAppsHook3.override { makeWrapper = buildPackages.makeShellWrapper; })
+    ];
+
+    # autoPatchelfHook cannot index libwebkit2gtk-4.1.so because pyelftools
+    # fails to parse it (ELFError: String Table not found).  Ignore the
+    # missing dep and add the library path via appendRunpaths so it is still
+    # available at runtime for libmsalruntime.so (Microsoft Authentication).
+    autoPatchelfIgnoreMissingDeps = lib.optionals stdenv.hostPlatform.isLinux [
+      "libwebkit2gtk-4.1.so.0"
+    ];
+    appendRunpaths = lib.optionals stdenv.hostPlatform.isLinux [
+      "${webkitgtk_4_1}/lib"
     ];
 
     dontBuild = true;
@@ -342,9 +358,13 @@ stdenv.mkDerivation (
             # for moving files to trash
             glib
 
-            # for launcher script
+            # for launcher and bundled helper scripts
+            gawk
+            glibc.bin
             gnugrep
+            gnused
             coreutils
+            which
           ]
         }
         --add-flags "\''${NIXOS_OZONE_WL:+\''${WAYLAND_DISPLAY:+--ozone-platform-hint=auto --enable-features=WaylandWindowDecorations --enable-wayland-ime=true --wayland-text-input-version=3}}"
@@ -355,9 +375,15 @@ stdenv.mkDerivation (
     # See https://github.com/NixOS/nixpkgs/issues/49643#issuecomment-873853897
     # linux only because of https://github.com/NixOS/nixpkgs/issues/138729
     postPatch =
-      # this is a fix for "save as root" functionality
       lib.optionalString stdenv.hostPlatform.isLinux (
+        # disable update checks
         ''
+          tmpProductJson="$(mktemp)"
+          jq 'del(.updateUrl, .backupUpdateUrl)' resources/app/product.json > "$tmpProductJson"
+          mv "$tmpProductJson" resources/app/product.json
+        ''
+        # this is a fix for "save as root" functionality
+        + ''
           packed="resources/app/node_modules.asar"
           unpacked="resources/app/node_modules"
           asar extract "$packed" "$unpacked"

@@ -89,7 +89,7 @@ let
     ;
 
   # Mark versions older than minSupportedVersion as EOL.
-  minSupportedVersion = "4.18";
+  minSupportedVersion = "4.17";
 
   scriptDeps =
     let
@@ -196,6 +196,18 @@ stdenv.mkDerivation (finalAttrs: {
     (fetchpatch {
       url = "https://xenbits.xenproject.org/xsa/xsa479.patch";
       hash = "sha256-2o6RYyT4Nrg1le6BUOQ3AwedorCvxvKao2uMYWrUV1Y=";
+    })
+
+    # XSA #480
+    (fetchpatch {
+      url = "https://xenbits.xenproject.org/xsa/xsa480.patch";
+      hash = "sha256-mHoY+Y8klwLYOo4LZCwYcNsB1BcBbSa1nQOn3NueDdI=";
+    })
+
+    # XSA #481
+    (fetchpatch {
+      url = "https://xenbits.xenproject.org/xsa/xsa481.patch";
+      hash = "sha256-QpRXS4rFuML2TawH7yhUmg8U4C1ATt4xiLLs91duuO8=";
     })
 
     # patch `libxl` to search for `qemu-system-i386` properly. (Before 4.21)
@@ -329,7 +341,7 @@ stdenv.mkDerivation (finalAttrs: {
     # We also need to wrap pygrub, which lies in $out/libexec/xen/bin.
     ''
       wrapPythonPrograms
-      wrapPythonProgramsIn "$out/libexec/xen/bin" "$out $pythonPath"
+      wrapPythonProgramsIn "$out/libexec/xen/bin" "$out ''${pythonPath[*]}"
     '';
 
   postFixup = ''
